@@ -19,7 +19,10 @@ jobs:
           yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null || true
           ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Unpack merged v2.4.2 source
-        run: unzip -q voice242-source-small.zip -d appsrc
+        run: |
+          unzip -q voice242-source-small.zip -d appsrc
+          cp build-github.sh appsrc/build-github.sh
+          chmod +x appsrc/build-github.sh
       - name: Download offline Paraformer model
         run: |
           MODEL=appsrc/app/src/main/assets/sherpa-onnx-streaming-paraformer-bilingual-zh-en
@@ -36,9 +39,6 @@ jobs:
       - name: Build APK cleanly
         run: |
           cd appsrc
-          export ANDROID_HOME=${ANDROID_HOME}
-          export BUILD_TOOLS_VERSION=36.0.0
-          export ANDROID_PLATFORM=android-36
           ./build-github.sh
       - name: Upload APK
         uses: actions/upload-artifact@v4
